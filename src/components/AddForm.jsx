@@ -1,4 +1,3 @@
-// components/AddForm.jsx
 import React, { useState } from 'react';
 import { Plus, ListPlus, Check, X } from 'lucide-react';
 
@@ -105,7 +104,6 @@ const AddForm = ({ onAddTask }) => {
         </div>
       </div>
 
-      {/* Gestion des étapes */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium text-slate-400">Étapes</span>
