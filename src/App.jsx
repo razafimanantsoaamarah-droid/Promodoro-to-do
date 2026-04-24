@@ -5,7 +5,7 @@ import TaskCard from './components/TaskCard';
 import AddForm from './components/AddForm';
 import EditDrawer from './components/EditDrawer';
 
-const BACKGROUND_IMAGE = './assets/bg_world.png';
+const BACKGROUND_IMAGE = './src/assets/bg_world.png';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/tasks';
 
 function App() {
