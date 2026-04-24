@@ -41,7 +41,6 @@ const EditDrawer = ({ isOpen, onClose, task, onSave }) => {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Overlay - CORRIGÉ : Utilise Motion.div au lieu de motion.div */}
           <Motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

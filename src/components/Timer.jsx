@@ -1,4 +1,3 @@
-// components/Timer.jsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Play, Pause, RotateCcw, SkipForward } from 'lucide-react';
 import { playNotification } from '../utils/sound';
@@ -51,7 +50,6 @@ const Timer = ({ activeTask, onTimerComplete }) => {
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
-  // useCallback conservé pour la stabilité
   const handleCycleComplete = useCallback(() => {
     playNotification();
     setIsRunning(false);
@@ -66,13 +64,11 @@ const Timer = ({ activeTask, onTimerComplete }) => {
     }
   }, [mode, onTimerComplete]);
 
-  // Gestion du timer : Logique corrigée pour éviter le setState dans l'effet
   useEffect(() => {
     if (isRunning) {
       intervalRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
-            // On gère la fin ici pour éviter le déclenchement par l'effet
             clearInterval(intervalRef.current);
             handleCycleComplete();
             return 0;
@@ -85,7 +81,7 @@ const Timer = ({ activeTask, onTimerComplete }) => {
     }
 
     return () => clearInterval(intervalRef.current);
-  }, [isRunning, handleCycleComplete]); // timeLeft n'est plus une dépendance, évitant les re-calculs inutiles
+  }, [isRunning, handleCycleComplete]);
 
   const toggleTimer = () => setIsRunning(prev => !prev);
 

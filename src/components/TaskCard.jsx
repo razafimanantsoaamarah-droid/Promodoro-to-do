@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trash2, Edit3, Play, CheckCircle2, Clock } from 'lucide-react';
-import { motion as Motion } from 'framer-motion'; // Syntaxe correcte ici
+import { motion as Motion } from 'framer-motion';
 const priorityColors = {
   Low: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
   Medium: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
