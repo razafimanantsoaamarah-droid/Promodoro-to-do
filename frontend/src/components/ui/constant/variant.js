@@ -6,3 +6,8 @@ export const variants = {
   outline: "bg-transparent border-2 border-white/50 text-white hover:bg-white/10",
   ghost: "bg-transparent text-white hover:bg-white/10 border border-transparent",
 };
+
+export const inputVariants = {
+  default: "bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:ring-4 focus:ring-cyan-500/10",
+  error: "bg-rose-500/5 border-rose-500/30 text-rose-200 placeholder:text-rose-300/50 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10"
+};
