@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 .env.production
 .env
+src/App.jsx
+.gitignore
