@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion as Motion } from 'framer-motion';
-import { X, Plus, Check } from 'lucide-react';
+import { X, Plus, Check, Edit3, Trash2 } from 'lucide-react';
+import { Button } from './ui/Button';
+import Input from './ui/Input';
+import Textarea from './ui/Textarea';
 
 const EditDrawer = ({ isOpen, onClose, task, onSave }) => {
   const [formData, setFormData] = useState({
@@ -10,163 +13,82 @@ const EditDrawer = ({ isOpen, onClose, task, onSave }) => {
     estimatedTime: task?.estimatedTime || 25,
     steps: task?.steps ? [...task.steps] : []
   });
-
   const [stepInput, setStepInput] = useState('');
 
-  const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
 
-  const addStep = () => {
-    if (stepInput.trim()) {
+  const handleChange = (field, value) => setFormData(prev => ({ ...prev, [field]: value }));
+
+  const handleStep = (action, val) => {
+    if (action === 'add' && stepInput.trim()) {
       setFormData(prev => ({ ...prev, steps: [...prev.steps, stepInput.trim()] }));
       setStepInput('');
+    } else if (action === 'remove') {
+      setFormData(prev => ({ ...prev, steps: prev.steps.filter((_, i) => i !== val) }));
     }
-  };
-
-  const removeStep = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      steps: prev.steps.filter((_, i) => i !== index)
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave({ ...task, ...formData });
-    onClose();
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          <Motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-            onClick={onClose}
-          />
+          <Motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md z-40" onClick={onClose} />
 
-          {/* Drawer */}
-          <Motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
+          <Motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 h-full w-full max-w-md bg-slate-900/95 backdrop-blur-xl border-l border-slate-700/50 shadow-2xl z-50 overflow-y-auto"
+            className="fixed top-0 right-0 h-full w-full max-w-md bg-slate-900/95 backdrop-blur-2xl border-l border-white/10 shadow-2xl z-50 overflow-y-auto"
           >
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-white">Modifier la tâche</h2>
-                <button
-                  onClick={onClose}
-                  type="button"
-                  className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition"
-                >
-                  <X size={24} />
-                </button>
-              </div>
+            <div className="p-8 space-y-8">
+              {/* Header */}
+              <header className="flex items-center justify-between">
+                <h2 className="text-2xl font-black text-white flex items-center gap-2">
+                  <Edit3 className="text-cyan-500" /> Modifier
+                </h2>
+                <Button variant="glass" onClick={onClose} className="p-2 rounded-full" icon={<X size={20} />} />
+              </header>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-1">Titre</label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => handleChange('title', e.target.value)}
-                    className="w-full bg-slate-800 text-white rounded-xl p-3 outline-none focus:ring-2 focus:ring-cyan-500/50"
-                    required
-                  />
-                </div>
+              <form onSubmit={(e) => { e.preventDefault(); onSave(formData); onClose(); }} className="space-y-6">
+                <Input label="Titre" value={formData.title} onChange={(e) => handleChange('title', e.target.value)} required />
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-1">Description</label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => handleChange('description', e.target.value)}
-                    rows="3"
-                    className="w-full bg-slate-800 text-white rounded-xl p-3 outline-none focus:ring-2 focus:ring-cyan-500/50 resize-none"
-                  />
-                </div>
+                <Textarea label="Description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} rows="3" />
 
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-400 mb-1">Priorité</label>
-                    <div className="flex gap-2">
+                <div className="grid grid-cols-2 gap-4">
+                  <section className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Priorité</label>
+                    <div className="flex gap-1">
                       {['Low', 'Medium', 'High'].map((p) => (
-                        <button
-                          key={p}
-                          type="button"
-                          onClick={() => handleChange('priority', p)}
-                          className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${
-                            formData.priority === p
-                              ? p === 'Low' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50'
-                              : p === 'Medium' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/50'
-                              : 'bg-rose-500/20 text-rose-400 border border-rose-500/50'
-                              : 'bg-slate-800 text-slate-400 border border-slate-700'
-                          }`}
-                        >
-                          {p}
-                        </button>
+                        <Button key={p} variant={formData.priority === p ? 'primary' : 'glass'}
+                          onClick={() => handleChange('priority', p)} className="flex-1 py-2 text-[10px]">{p}</Button>
                       ))}
                     </div>
-                  </div>
-
-                  <div className="w-32">
-                    <label className="block text-sm font-medium text-slate-400 mb-1">Temps (min)</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="180"
-                      value={formData.estimatedTime}
-                      onChange={(e) => handleChange('estimatedTime', parseInt(e.target.value, 10) || 0)}
-                      className="w-full bg-slate-800 text-white rounded-xl p-2 outline-none focus:ring-2 focus:ring-cyan-500/50 text-center"
-                    />
-                  </div>
+                  </section>
+                  <Input type="number" label="Temps (min)" value={formData.estimatedTime}
+                    onChange={(e) => handleChange('estimatedTime', parseInt(e.target.value))} />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-1">Étapes</label>
-                  <div className="space-y-2 mb-3">
+                {/* Section Étapes */}
+                <section className="space-y-3">
+                  <label className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Sous-étapes</label>
+                  <div className="space-y-2">
                     {formData.steps.map((step, idx) => (
-                      <div key={idx} className="flex items-center gap-2 bg-slate-800/50 rounded-lg p-2">
+                      <div key={idx} className="flex items-center gap-2 bg-white/5 border border-white/5 rounded-xl p-3 group">
                         <Check size={14} className="text-cyan-400" />
                         <span className="text-sm text-slate-300 flex-1">{step}</span>
-                        <button type="button" onClick={() => removeStep(idx)} className="text-slate-500 hover:text-rose-400">
-                          <X size={14} />
-                        </button>
+                        <Button variant="danger" className="opacity-0 group-hover:opacity-100 p-1"
+                          onClick={() => handleStep('remove', idx)} icon={<Trash2 size={14} />} />
                       </div>
                     ))}
                   </div>
                   <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Ajouter une étape..."
-                      value={stepInput}
-                      onChange={(e) => setStepInput(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addStep())}
-                      className="flex-1 bg-slate-800 text-white rounded-xl p-2 outline-none focus:ring-2 focus:ring-cyan-500/50 text-sm"
-                    />
-                    <button
-                      type="button"
-                      onClick={addStep}
-                      className="p-2 bg-slate-700 text-white rounded-xl hover:bg-slate-600 transition"
-                    >
-                      <Plus size={20} />
-                    </button>
+                    <Input placeholder="Nouvelle étape..." value={stepInput} onChange={(e) => setStepInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleStep('add'))} />
+                    <Button variant="primary" onClick={() => handleStep('add')} icon={<Plus size={20} />} />
                   </div>
-                </div>
+                </section>
 
-                <div className="pt-4">
-                  <button
-                    type="submit"
-                    className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-cyan-900/20"
-                  >
-                    Enregistrer les modifications
-                  </button>
-                </div>
+                <Button type="submit" variant="primary" className="w-full py-4 text-lg font-black uppercase tracking-widest">
+                  Mettre à jour
+                </Button>
               </form>
             </div>
           </Motion.div>
