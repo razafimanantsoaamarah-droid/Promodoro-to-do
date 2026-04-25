@@ -1,166 +1,105 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, RotateCcw, SkipForward } from 'lucide-react';
-import { playNotification } from '../utils/sound';
+import { Play, Pause, RotateCcw, SkipForward} from 'lucide-react';
+import { Button } from './ui/Button';
+import { Card } from './ui/Card';
+import { modes } from './ui/constant/variant';
+import { CircularProgress } from './ui/CircularProgression';
 
-const modes = {
-  work: { label: 'Focus', duration: 25 * 60, color: '#06b6d4' },
-  shortBreak: { label: 'Short Break', duration: 5 * 60, color: '#6366f1' },
-  longBreak: { label: 'Long Break', duration: 15 * 60, color: '#8b5cf6' }
-};
-
-const CircularProgress = ({ progress, color }) => {
-  const radius = 120;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (progress / 100) * circumference;
-
-  return (
-    <svg width="280" height="280" viewBox="0 0 280 280" className="transform -rotate-90">
-      <circle
-        cx="140"
-        cy="140"
-        r={radius}
-        fill="transparent"
-        stroke="#1e293b"
-        strokeWidth="8"
-      />
-      <circle
-        cx="140"
-        cy="140"
-        r={radius}
-        fill="transparent"
-        stroke={color}
-        strokeWidth="8"
-        strokeDasharray={circumference}
-        strokeDashoffset={offset}
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-};
 
 const Timer = ({ activeTask, onTimerComplete }) => {
-
   const [mode, setMode] = useState('work');
   const [timeLeft, setTimeLeft] = useState(modes.work.duration);
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef(null);
-
-  const totalDuration = modes[mode].duration;
-  const progress = ((totalDuration - timeLeft) / totalDuration) * 100;
-  const minutes = Math.floor(timeLeft / 60);
-  const seconds = timeLeft % 60;
+  const switchMode = useCallback((newMode) => {
+    setIsRunning(false);
+    setMode(newMode);
+    setTimeLeft(modes[newMode].duration);
+  }, []);
 
   const handleCycleComplete = useCallback(() => {
-    playNotification();
     setIsRunning(false);
     onTimerComplete?.(mode);
-    
-    if (mode === 'work') {
-      setMode('shortBreak');
-      setTimeLeft(modes.shortBreak.duration);
-    } else {
-      setMode('work');
-      setTimeLeft(modes.work.duration);
-    }
-  }, [mode, onTimerComplete]);
+    const nextMode = mode === 'work' ? 'shortBreak' : 'work';
+    switchMode(nextMode);
+  }, [mode, onTimerComplete, switchMode]);
 
   useEffect(() => {
     if (isRunning) {
       intervalRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
-            clearInterval(intervalRef.current);
             handleCycleComplete();
             return 0;
           }
           return prev - 1;
         });
       }, 1000);
-    } else {
-      clearInterval(intervalRef.current);
     }
-
     return () => clearInterval(intervalRef.current);
   }, [isRunning, handleCycleComplete]);
 
-  const toggleTimer = () => setIsRunning(prev => !prev);
-
-  const resetTimer = () => {
-    setIsRunning(false);
-    setTimeLeft(modes[mode].duration);
+  const formatTime = (time) => {
+    const m = Math.floor(time / 60).toString().padStart(2, '0');
+    const s = (time % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
   };
 
-  const skipToNext = () => {
-    setIsRunning(false);
-    if (mode === 'work') {
-      setMode('shortBreak');
-      setTimeLeft(modes.shortBreak.duration);
-    } else {
-      setMode('work');
-      setTimeLeft(modes.work.duration);
-    }
-  };
-
-  const switchMode = (newMode) => {
-    setIsRunning(false);
-    setMode(newMode);
-    setTimeLeft(modes[newMode].duration);
-  };
+  const progress = ((modes[mode].duration - timeLeft) / modes[mode].duration) * 100;
 
   return (
-    <div className="relative flex flex-col items-center justify-center">
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-cyan-500/5 rounded-full blur-3xl" />
+    <Card className="relative flex flex-col items-center max-w-sm mx-auto p-10 overflow-hidden">
+      <div 
+        className="absolute -top-20 -left-20 w-64 h-64 rounded-full blur-[100px] opacity-20 transition-colors duration-1000"
+        style={{ backgroundColor: modes[mode].color }}
+      />
 
-      <div className="relative">
+      <div className="relative mb-8">
         <CircularProgress progress={progress} color={modes[mode].color} />
-
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-          <span className="text-sm font-medium uppercase tracking-wider text-slate-400">
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 mb-2">
             {activeTask ? activeTask.title : modes[mode].label}
           </span>
-          <div className="text-5xl font-mono font-bold text-white mt-2 tabular-nums">
-            {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
-          </div>
-
-          <div className="flex gap-2 mt-4 justify-center">
-            <button
-              onClick={toggleTimer}
-              className="p-3 bg-slate-800/80 backdrop-blur-sm rounded-full text-cyan-400 hover:bg-slate-700 transition"
-            >
-              {isRunning ? <Pause size={20} /> : <Play size={20} />}
-            </button>
-            <button
-              onClick={resetTimer}
-              className="p-3 bg-slate-800/80 backdrop-blur-sm rounded-full text-slate-300 hover:bg-slate-700 transition"
-            >
-              <RotateCcw size={20} />
-            </button>
-            <button
-              onClick={skipToNext}
-              className="p-3 bg-slate-800/80 backdrop-blur-sm rounded-full text-slate-300 hover:bg-slate-700 transition"
-            >
-              <SkipForward size={20} />
-            </button>
+          <div className="text-6xl font-black text-white tabular-nums tracking-tighter">
+            {formatTime(timeLeft)}
           </div>
         </div>
       </div>
+      <div className="flex gap-4 mb-10">
+        <Button 
+          variant="glass" 
+          className="p-4 rounded-full" 
+          onClick={() => setTimeLeft(modes[mode].duration)} 
+          icon={<RotateCcw size={20} />} 
+        />
+        <Button 
+          variant="primary" 
+          className="w-20 h-20 rounded-full shadow-xl shadow-cyan-500/20" 
+          onClick={() => setIsRunning(!isRunning)} 
+          icon={isRunning ? <Pause size={32} fill="currentColor"/> : <Play size={32} fill="currentColor" className="ml-1"/>} 
+        />
+        <Button 
+          variant="glass" 
+          className="p-4 rounded-full" 
+          onClick={handleCycleComplete} 
+          icon={<SkipForward size={20} />} 
+        />
+      </div>
 
-      <div className="flex gap-1 mt-6 bg-slate-800/40 backdrop-blur-sm p-1 rounded-2xl">
+      <nav className="flex gap-1 bg-white/5 p-1.5 rounded-2xl border border-white/5">
         {Object.entries(modes).map(([key, { label }]) => (
-          <button
+          <Button
             key={key}
+            variant={mode === key ? "primary" : "ghost"}
             onClick={() => switchMode(key)}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
-              mode === key
-                ? 'bg-gradient-to-r from-cyan-500 to-indigo-500 text-white shadow-lg'
-                : 'text-slate-400 hover:text-white'
-            }`}
+            className="px-4 py-2 text-xs"
+            icon={<Icon size={14} />}
           >
             {label}
-          </button>
+          </Button>
         ))}
-      </div>
-    </div>
+      </nav>
+    </Card>
   );
 };
 
