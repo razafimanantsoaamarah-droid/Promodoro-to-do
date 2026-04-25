@@ -32,7 +32,6 @@ const TaskCard = ({ task, onToggleComplete, onDelete, onEdit, onStartFocus, onTo
           <h3 className={`text-xl font-bold truncate ${isCompleted ? 'line-through text-slate-500' : 'text-white'}`}>{task.title}</h3>
           {task.description && <p className="text-slate-400 text-sm mt-1 line-clamp-2">{task.description}</p>}
 
-          {/* Sous-étapes interactives */}
           {task.steps?.length > 0 && (
             <ul className="mt-4 space-y-2 border-l-2 border-white/5 pl-4">
               {task.steps.map((step, idx) => (
