@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { Plus, ListPlus, Check, X, Clock, AlertCircle } from 'lucide-react';
 import { Button } from './ui/Button';
+import Input from './ui/Input';
 
 const AddForm = ({ onAddTask }) => {
   const [title, setTitle] = useState('');
@@ -91,11 +92,12 @@ const AddForm = ({ onAddTask }) => {
           <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-widest">
             <Clock size={14} /> Répétitions
           </label>
-          <input
+          <Input
             type="number"
             value={repetition}
             onChange={(e) => setRepetition(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 text-white rounded-xl py-2 px-4 outline-none focus:border-cyan-500 transition-all text-center font-mono"
+            placeholder="1"
+            className="w-full"
           />
         </div>
       </div>
@@ -144,7 +146,7 @@ const AddForm = ({ onAddTask }) => {
             animate={{ opacity: 1, y: 0 }}
             className="flex gap-2"
           >
-            <input
+            <Input
               type="text"
               placeholder="Faire les recherches..."
               value={stepInput}
