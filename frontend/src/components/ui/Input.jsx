@@ -1,16 +1,32 @@
 import React from 'react';
 import { inputVariants } from './constant/variant';
 
-const Input = ({ value, onChange, placeholder, error = false, type = "text", className = "", ...props }) => {
+const Input = ({ 
+  label, 
+  icon: Icon,
+  value, 
+  onChange, 
+  placeholder, 
+  error = false, 
+  type = "text", 
+  className = "", 
+  ...props 
+}) => {
   return (
-    <div className="w-full space-y-1">
+    <div className="w-full space-y-1.5">
+      {label && (
+        <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">
+          {Icon && <Icon size={14} className="text-slate-500" />}
+          {label}
+        </label>
+      )}
       <input
         type={type}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         className={`
-          w-full px-4 py-1 rounded-xl outline-none border transition-all duration-300
+          w-full px-4 py-2.5 rounded-xl outline-none border transition-all duration-300
           ${inputVariants[error ? 'error' : 'default']}
           ${className}
         `}
