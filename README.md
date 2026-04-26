@@ -86,43 +86,6 @@ L'application est accessible sur `http://localhost:5173`.
 npm run build
 npm run preview
 ```
-
----
-
-## 📁 Structure du projet
-
-```
-frontend/
-├── public/
-│   ├── favicon.ico
-│   ├── og-image.jpg
-│   └── site.webmanifest
-├── src/
-│   ├── assets/
-│   │   └── bg_world.png
-│   ├── components/
-│   │   ├── AddForm.jsx
-│   │   ├── EditDrawer.jsx
-│   │   ├── TaskCard.jsx
-│   │   ├── Timer.jsx
-│   │   └── ui/
-│   │       ├── Button.jsx
-│   │       ├── Card.jsx
-│   │       ├── CircularProgression.jsx
-│   │       ├── Input.jsx
-│   │       ├── Textarea.jsx
-│   │       └── constant/
-│   │           └── variant.js
-│   ├── hooks/
-│   │   └── useLocalStorage.js
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
-├── index.html
-├── package.json
-└── vite.config.js
-```
-
 ---
 
 ## 🔄 CI/CD
@@ -174,4 +137,3 @@ MIT © [RMY FOCUS Team](https://github.com/razafimanantsoaamarah-droid)
 <div align="center">
   <sub>Made with ❤️ and ☕ by <strong>RMY FOCUS Team</strong></sub>
 </div>
-```
