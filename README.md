@@ -35,14 +35,6 @@ Conçue pour les développeurs, étudiants et créatifs qui veulent rester conce
 
 ---
 
-## 🖼️ Aperçu
-
-<div align="center">
-  <img src="https://via.placeholder.com/800x400/0f172a/06b6d4?text=RMY+FOCUS+Preview" alt="Aperçu RMY FOCUS" />
-</div>
-
----
-
 ## 🛠️ Stack technique
 
 ```json
