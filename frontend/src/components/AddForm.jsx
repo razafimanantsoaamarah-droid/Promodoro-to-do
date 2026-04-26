@@ -18,7 +18,6 @@ const AddForm = ({ onAddTask }) => {
 
   const handleStep = (action, val) => {
     if (action === 'add' && stepInput.trim()) {
-      // On crée un objet pour chaque étape
       setForm(prev => ({ 
         ...prev, 
         steps: [...prev.steps, { text: stepInput.trim(), completed: false }] 

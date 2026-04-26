@@ -20,7 +20,10 @@ const EditDrawer = ({ isOpen, onClose, task, onSave }) => {
 
   const handleStep = (action, val) => {
     if (action === 'add' && stepInput.trim()) {
-      setFormData(prev => ({ ...prev, steps: [...prev.steps, stepInput.trim()] }));
+      setFormData(prev => ({ 
+        ...prev, 
+        steps: [...prev.steps, { text: stepInput.trim(), completed: false }] 
+      }));
       setStepInput('');
     } else if (action === 'remove') {
       setFormData(prev => ({ ...prev, steps: prev.steps.filter((_, i) => i !== val) }));
@@ -70,14 +73,17 @@ const EditDrawer = ({ isOpen, onClose, task, onSave }) => {
                 <section className="space-y-3">
                   <label className="text-[10px] uppercase tracking-widest font-bold text-slate-500">Sous-étapes</label>
                   <div className="space-y-2">
-                    {formData.steps.map((step, idx) => (
-                      <div key={idx} className="flex items-center gap-2 bg-white/5 border border-white/5 rounded-xl p-3 group">
-                        <Check size={14} className="text-cyan-400" />
-                        <span className="text-sm text-slate-300 flex-1">{step}</span>
-                        <Button variant="danger" className="opacity-0 group-hover:opacity-100 p-1"
-                          onClick={() => handleStep('remove', idx)} icon={<Trash2 size={14} />} />
-                      </div>
-                    ))}
+                    {formData.steps.map((step, idx) => {
+                      const stepText = typeof step === 'string' ? step : step.text;
+                      return (
+                        <div key={idx} className="flex items-center gap-2 bg-white/5 border border-white/5 rounded-xl p-3 group">
+                          <Check size={14} className="text-cyan-400" />
+                          <span className="text-sm text-slate-300 flex-1">{stepText}</span>
+                          <Button variant="danger" className="opacity-0 group-hover:opacity-100 p-1"
+                            onClick={() => handleStep('remove', idx)} icon={<Trash2 size={14} />} />
+                        </div>
+                      );
+                    })}
                   </div>
                   <div className="flex gap-2">
                     <Input placeholder="Nouvelle étape..." value={stepInput} onChange={(e) => setStepInput(e.target.value)}

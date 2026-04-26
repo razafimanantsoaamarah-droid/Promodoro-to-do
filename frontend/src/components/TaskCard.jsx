@@ -34,16 +34,21 @@ const TaskCard = ({ task, onToggleComplete, onDelete, onEdit, onStartFocus, onTo
 
           {task.steps?.length > 0 && (
             <ul className="mt-4 space-y-2 border-l-2 border-white/5 pl-4">
-              {task.steps.map((step, idx) => (
-                <li key={idx} className="flex items-center gap-3 group/step">
-                  <button onClick={() => onToggleStep(task.id, idx)}
-                    className={`w-4 h-4 rounded border transition-all flex items-center justify-center 
-                    ${step.completed ? 'bg-indigo-500 border-indigo-500' : 'border-white/20 group-hover/step:border-indigo-500'}`}>
-                    {step.completed && <Check size={10} className="text-white" strokeWidth={4} />}
-                  </button>
-                  <span className={`text-xs ${step.completed ? 'text-slate-500 line-through' : 'text-slate-300'}`}>{step.text}</span>
-                </li>
-              ))}
+              {task.steps.map((step, idx) => {
+                // Normaliser le step (string ou objet)
+                const stepText = typeof step === 'string' ? step : step.text;
+                const stepCompleted = typeof step === 'string' ? false : step.completed;
+                return (
+                  <li key={idx} className="flex items-center gap-3 group/step">
+                    <button onClick={() => onToggleStep(task.id, idx)}
+                      className={`w-4 h-4 rounded border transition-all flex items-center justify-center 
+                      ${stepCompleted ? 'bg-indigo-500 border-indigo-500' : 'border-white/20 group-hover/step:border-indigo-500'}`}>
+                      {stepCompleted && <Check size={10} className="text-white" strokeWidth={4} />}
+                    </button>
+                    <span className={`text-xs ${stepCompleted ? 'text-slate-500 line-through' : 'text-slate-300'}`}>{stepText}</span>
+                  </li>
+                );
+              })}
             </ul>
           )}
 

@@ -96,19 +96,16 @@ function App() {
 
 	const handleToggleStep = async (taskId, stepIndex) => {
 		const task = tasks.find(t => t.id === taskId);
-		if (!task) return;
+		if (!task || !task.steps) return;
 
 		const updatedSteps = task.steps.map((step, idx) => {
+			// Normaliser le step en objet si c'est une string
+			const normalizedStep = typeof step === 'string' ? { text: step, completed: false } : step;
+			
 			if (idx === stepIndex) {
-				if (typeof step === 'string') {
-					return { text: step, completed: true };
-				}
-				return { ...step, completed: !step.completed };
+				return { ...normalizedStep, completed: !normalizedStep.completed };
 			}
-			if (typeof step === 'string') {
-				return { text: step, completed: false };
-			}
-			return step;
+			return normalizedStep;
 		});
 
 		const updatedTask = { ...task, steps: updatedSteps };
