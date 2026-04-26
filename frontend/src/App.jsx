@@ -4,8 +4,9 @@ import Timer from './components/Timer';
 import TaskCard from './components/TaskCard';
 import AddForm from './components/AddForm';
 import EditDrawer from './components/EditDrawer';
+import bgWorld from './assets/bg_world.png';
 
-const BACKGROUND_IMAGE = './assets/bg_world.png';
+const BACKGROUND_IMAGE = bgWorld;
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/tasks';
 
 function App() {
