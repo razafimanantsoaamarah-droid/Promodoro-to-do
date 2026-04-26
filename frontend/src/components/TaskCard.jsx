@@ -1,70 +1,62 @@
 import React from 'react';
-import { Trash2, Edit3, Play, CheckCircle2, Clock } from 'lucide-react';
+import { Trash2, Edit3, Play, CheckCircle2, Clock, Check } from 'lucide-react';
 import { motion as Motion } from 'framer-motion';
+import { Button } from './ui/Button';
 
-const priorityColors = {
+const priorityStyles = {
   Low: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
   Medium: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
   High: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
 };
 
-const TaskCard = ({ task, onToggleComplete, onDelete, onEdit, onStartFocus }) => {
+const TaskCard = ({ task, onToggleComplete, onDelete, onEdit, onStartFocus, onToggleStep }) => {
   const isCompleted = task.completed;
-  // Fallback si la priorité est inconnue ou absente
-  const currentPriorityColor = priorityColors[task.priority] || priorityColors.Medium;
+  const currentStyle = priorityStyles[task.priority] || priorityStyles.Medium;
 
   return (
-    <Motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      className={`relative bg-slate-800/40 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-6 shadow-xl ${isCompleted ? 'opacity-60' : ''}`}
-    >
-      <div className="absolute -top-2 -right-2 z-10">
-        <span className={`text-xs font-bold px-3 py-1 rounded-full border ${currentPriorityColor}`}>
-          {task.priority || 'Normal'}
+    <Motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+      className={`relative bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 shadow-xl transition-all ${isCompleted ? 'opacity-50' : 'hover:bg-white/10'}`}>
+      
+      <div className="absolute -top-2 -right-2">
+        <span className={`text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-lg border ${currentStyle}`}>
+          {task.priority || 'Medium'}
         </span>
       </div>
 
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-4 flex-1">
-          <button
-            onClick={() => onToggleComplete(task.id)}
-            className={`mt-1 transition-colors ${isCompleted ? 'text-emerald-400' : 'text-slate-500 hover:text-emerald-400'}`}
-          >
-            <CheckCircle2 size={24} />
-          </button>
-          
-          <div className="flex-1">
-            <h3 className={`text-xl font-bold ${isCompleted ? 'line-through text-slate-400' : 'text-white'}`}>
-              {task.title}
-            </h3>
-            {task.description && <p className="text-slate-400 text-sm mt-1">{task.description}</p>}
+      <div className="flex items-start gap-4">
+        <button onClick={() => onToggleComplete(task.id)} className={`mt-1 transition-all ${isCompleted ? 'text-emerald-400' : 'text-slate-600 hover:text-emerald-500'}`}>
+          <CheckCircle2 size={26} strokeWidth={isCompleted ? 3 : 2} />
+        </button>
+        
+        <div className="flex-1 min-w-0">
+          <h3 className={`text-xl font-bold truncate ${isCompleted ? 'line-through text-slate-500' : 'text-white'}`}>{task.title}</h3>
+          {task.description && <p className="text-slate-400 text-sm mt-1 line-clamp-2">{task.description}</p>}
 
-            {/* Sécurisation ici avec le ? */}
-            {task.steps?.length > 0 && (
-              <div className="mt-3 space-y-1.5 border-l-2 border-indigo-500/30 pl-4">
-                {task.steps.map((step, idx) => (
-                  <div key={idx} className="text-sm text-slate-300 flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
-                    {step}
-                  </div>
-                ))}
-              </div>
-            )}
+          {/* Sous-étapes interactives */}
+          {task.steps?.length > 0 && (
+            <ul className="mt-4 space-y-2 border-l-2 border-white/5 pl-4">
+              {task.steps.map((step, idx) => (
+                <li key={idx} className="flex items-center gap-3 group/step">
+                  <button onClick={() => onToggleStep(task.id, idx)}
+                    className={`w-4 h-4 rounded border transition-all flex items-center justify-center 
+                    ${step.completed ? 'bg-indigo-500 border-indigo-500' : 'border-white/20 group-hover/step:border-indigo-500'}`}>
+                    {step.completed && <Check size={10} className="text-white" strokeWidth={4} />}
+                  </button>
+                  <span className={`text-xs ${step.completed ? 'text-slate-500 line-through' : 'text-slate-300'}`}>{step.text}</span>
+                </li>
+              ))}
+            </ul>
+          )}
 
-            <div className="flex items-center gap-2 mt-3 text-xs text-slate-400">
-              <Clock size={14} />
-              <span>Estimé: {task.estimatedTime || 25} min</span>
-            </div>
-          </div>
+          <footer className="flex items-center gap-4 mt-5 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+            <div className="flex items-center gap-1.5"><Clock size={12} className="text-cyan-500" /><span>{task.estimatedTime || 25} MIN</span></div>
+          </footer>
         </div>
 
-        <div className="flex items-center gap-1">
-          <button onClick={() => onStartFocus(task)} className="p-2 text-cyan-400 hover:bg-cyan-500/10 rounded-xl transition"><Play size={18} /></button>
-          <button onClick={() => onEdit(task)} className="p-2 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-xl transition"><Edit3 size={18} /></button>
-          <button onClick={() => onDelete(task.id)} className="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition"><Trash2 size={18} /></button>
+        <div className="flex flex-col gap-2">
+          {!isCompleted && <Button variant="primary" className="p-2.5 rounded-xl" onClick={() => onStartFocus(task)} icon={<Play size={18} fill="currentColor" />} />}
+          <Button variant="glass" className="p-2.5 rounded-xl" onClick={() => onEdit(task)} icon={<Edit3 size={18} />} />
+          <Button variant="danger" className="p-2.5 rounded-xl bg-transparent" onClick={() => onDelete(task.id)} icon={<Trash2 size={18} />} />
         </div>
       </div>
     </Motion.div>
