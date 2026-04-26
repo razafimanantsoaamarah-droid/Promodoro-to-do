@@ -5,7 +5,8 @@ import Timer from './components/Timer';
 import TaskCard from './components/TaskCard';
 import AddForm from './components/AddForm';
 import EditDrawer from './components/EditDrawer';
-import bgWorld from './assets/bg_world.png';
+
+const BG_IMAGE = 'https://png.pngtree.com/thumb_back/fh260/background/20240522/pngtree-abstract-blue-background-with-smooth-lines-and-light-effects-image_15683483.jpg';
 
 function App() {
   const [tasks, setTasks] = useLocalStorage('zenith-focus-tasks', []);
@@ -13,7 +14,6 @@ function App() {
   const [editingTask, setEditingTask] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Demande de permission pour les notifications
   useEffect(() => {
     if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
       Notification.requestPermission();
@@ -53,7 +53,9 @@ function App() {
     setIsDrawerOpen(true);
   };
 
-  const handleSaveEdit = (updatedTask) => {
+  const handleSaveEdit = (formData) => {
+    if (!editingTask) return;
+    const updatedTask = { ...editingTask, ...formData };
     updateTask(updatedTask);
   };
 
@@ -73,7 +75,7 @@ function App() {
   return (
     <div className="min-h-screen bg-[#0f172a] text-white font-sans relative overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center opacity-20 blur-sm"
-        style={{ backgroundImage: `url(${bgWorld})` }} />
+        style={{ backgroundImage: `url(${BG_IMAGE})` }} />
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/30 via-transparent to-cyan-900/30" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
