@@ -87,13 +87,13 @@ const Timer = ({ activeTask, onTimerComplete }) => {
       </div>
 
       <nav className="flex gap-1 bg-white/5 p-1.5 rounded-2xl border border-white/5">
-        {Object.entries(modes).map(([key, { label }]) => (
+        {Object.entries(modes).map(([key, { label, icon: Icon }]) => ( 
           <Button
             key={key}
             variant={mode === key ? "primary" : "ghost"}
             onClick={() => switchMode(key)}
             className="px-4 py-2 text-xs"
-            icon={<Icon size={14} />}
+            icon={<Icon size={14} />} // Maintenant Icon est bien défini !
           >
             {label}
           </Button>
