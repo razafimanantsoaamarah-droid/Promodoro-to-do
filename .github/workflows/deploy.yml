@@ -1,8 +1,11 @@
-name: Build and Deploy
+name: Legacy Deploy (Deprecated - Use release-deploy.yml instead)
 
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy.yml'
 
 permissions:
   contents: write
@@ -30,7 +33,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL || 'http://localhost:3001/tasks' }}
         run: npm run build
 
       - name: Deploy to GitHub Pages
