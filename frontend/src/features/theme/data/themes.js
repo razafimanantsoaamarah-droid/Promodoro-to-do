@@ -1,60 +1,40 @@
 import { Moon, Cpu, Leaf, Circle, Sparkles } from 'lucide-react';
 
+import defaultImg from '../../../assets/themes/default.png';
+import cyberpunkImg from '../../../assets/themes/cyberpunk.png';
+import natureImg from '../../../assets/themes/nature.png';
+import galaxyImg from '../../../assets/themes/galaxy.png';
+import minimalImg from '../../../assets/themes/minimal.png';
+
 export const themes = [
   {
     id: 'default',
     name: 'RMY Dark',
     icon: Moon,
-    image: '/images/themes/default.jpg',
-    background: 'bg-[#0f172a]',
-    gradient: 'from-indigo-900/30 via-transparent to-cyan-900/30',
-    cardBg: 'bg-white/5',
-    border: 'border-white/10',
-    accent: 'cyan',
+    image: defaultImg,
   },
   {
     id: 'cyberpunk',
     name: 'Cyberpunk',
     icon: Cpu,
-    image: '../assets/themes/cyberpunk.png',
-    background: 'bg-[#0a0a0a]',
-    gradient: 'from-pink-900/30 via-transparent to-yellow-900/30',
-    cardBg: 'bg-pink-500/5',
-    border: 'border-pink-500/20',
-    accent: 'pink',
+    image: cyberpunkImg,
   },
   {
     id: 'nature',
     name: 'Nature',
     icon: Leaf,
-    image: '../assets/themes/nature.png',
-    background: 'bg-[#0a1a0a]',
-    gradient: 'from-emerald-900/40 via-transparent to-green-900/30',
-    cardBg: 'bg-emerald-500/5',
-    border: 'border-emerald-500/20',
-    accent: 'emerald',
+    image: natureImg,
   },
   {
     id: 'minimal',
     name: 'Minimal',
     icon: Circle,
-    image: '../images/themes/minimal.jpg',
-    background: 'bg-[#fafafa]',
-    gradient: 'from-gray-200/30 via-transparent to-gray-200/30',
-    cardBg: 'bg-white/80',
-    border: 'border-gray-200',
-    accent: 'gray',
-    textColor: 'text-gray-900',
+    image: minimalImg,
   },
   {
     id: 'galaxy',
     name: 'Galaxy',
     icon: Sparkles,
-    image: '../assets/themes/galaxy.png',
-    background: 'bg-[#0a001a]',
-    gradient: 'from-purple-900/40 via-transparent to-indigo-900/40',
-    cardBg: 'bg-purple-500/5',
-    border: 'border-purple-500/20',
-    accent: 'purple',
+    image: galaxyImg,
   },
 ];

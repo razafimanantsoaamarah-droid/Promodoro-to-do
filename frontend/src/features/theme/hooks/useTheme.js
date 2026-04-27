@@ -1,19 +1,22 @@
-import { useState, useEffect } from 'react';
-import { FastAverageColor } from 'fast-average-color';
+import { useLocalStorage } from '../../../hooks/useLocalStorage';
+import { themes } from '../data/themes';
+import { useEffect, useMemo } from 'react';
 
-export function useDynamicColor(imageUrl) {
-  const [color, setColor] = useState('#0f172a');
+export function useTheme() {
+  const [themeId, setThemeId] = useLocalStorage('rmy-theme', 'default');
+  const [customImages, setCustomImages] = useLocalStorage('rmy-custom-theme-images', {});
+  const theme = themes.find(t => t.id === themeId) || themes[0];
 
+  // Applique l'attribut data-theme sur <html>
   useEffect(() => {
-    if (!imageUrl) return;
+    document.documentElement.setAttribute('data-theme', themeId);
+  }, [themeId]);
 
-    const fac = new FastAverageColor();
-    fac.getColorAsync(imageUrl)
-      .then(res => {
-        setColor(res.hex);
-      })
-      .catch(e => console.error(e));
-  }, [imageUrl]);
+  // Image actuelle : custom ou défaut — recalculée automatiquement
+  const currentImage = useMemo(
+    () => customImages[themeId] || theme.image,
+    [themeId, customImages, theme.image]
+  );
 
-  return color;
+  return { theme, themeId, setThemeId, themes, currentImage, customImages, setCustomImages };
 }
